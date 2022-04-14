@@ -4,7 +4,7 @@ Feature: Gestão de usuários
     Para ter o controle das informações cadastradas
 
     Background: Base url 
-        Given url baseUrl
+        Given url "https://petstore.swagger.io/v2"
         And path "user"
         * def userId = "13"
         * def userName = "elidab"
