@@ -6,11 +6,10 @@ Feature: Gestão de usuários
     Background: Base url 
         Given url baseUrl
         And path "user"
-        * def userId = "13"
-        * def userName = "elidab"
         * def userNameUpdate = "elidag"
-        * def payload = { id: 13, username: "elidab", firstName: "Élida", lastName: "Gonçalves", email: "elidab@example.com", password: "1234", phone: "9999-9999", userStatus: 0 }
-        * def payloadUpdate = { id: 14, username: "elidag", firstName: "Élida", lastName: "Gonçalves", email: "elidag@example.com", password: "4321", phone: "8888-8888", userStatus: 0 }
+        * def primeiroNomeDoUsuario = "Lucas"
+        * def payload = read("payloadCriacaoUsuario.json")
+        * def userId = payload.id.toString()
 
     Scenario: Cadastrar um novo usuário
         And request payload
@@ -20,19 +19,21 @@ Feature: Gestão de usuários
         And match response contains { code: 200, type: "unknown", message: "#(userId)"}
 
     Scenario: Consultar usuário cadastrado pelo username
-        And path userName
+        And path payload.username
         When method get
         Then status 200
         And match response contains payload
 
     Scenario: Atualizar informações do usuário cadastrado
-        And path userName
-        And request payloadUpdate
+        # * def payloadAtualizado = { id: "#(payload.id)", username: "#(payload.username)", firstName: "Abacate" , lastName: "Doce", email: "#(payload.email)", password: "#(payload.password)", phone: "#(payload.phone)", userStatus: "#(payload.userStatus)" }
+        * def payloadAtualizado = ({ ...payload, firstName: "Abacate", lastName: "Docinho" })
+        And path payload.username
+        And request payloadAtualizado
         When method put
         Then status 200
 
         Given path "user"
-        And path userNameUpdate
+        And path payload.username
         When method get
         Then status 200
-        And match response contains payloadUpdate
+        And match response contains payloadAtualizado
